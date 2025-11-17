@@ -10,10 +10,7 @@ import AgeingAbove90Card from '../component/cards/AgeingAbove90Card';
 const DashboardPage = () => {
   return (
     <div className="p-4">
-      <h2>Dashboard</h2>
-      {/* Display options or content here */}
-      <p>Welcome to your dashboard!</p>
-      {/* Add links or buttons for navigation */}
+
 
       {/* Top Row - 3 Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
@@ -25,7 +22,7 @@ const DashboardPage = () => {
 
       {/* Bottom Row - 3 Cards */}
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-2">
         <UnreadEmailsCard emails={demoData.unreadEmails} />
         <SalesDashboardCard sales={demoData.salesDashboard} />
         <AgeingAbove90Card data={demoData.ageingData} />

@@ -1,40 +1,44 @@
 import React from 'react';
-import './Sidebar.css'; // If Sidebar.css is in src/component/ folder
+import { NavLink } from 'react-router-dom';
+import './Sidebar.css';
 
-const Sidebar = ({ activeRoute, setActiveRoute }) => {
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'favourites', label: 'Favourites', icon: '⭐' },
-    { id: 'master-fms', label: 'Master FMS', icon: '📋' },
-    { id: 'master-table', label: 'Master Table', icon: '📑' },
-    { id: 'users', label: 'Users', icon: '👥' },
-    { id: 'email', label: 'Email', icon: '📧' },
-    { id: 'checklist', label: 'Checklist', icon: '✅' },
-    { id: 'features', label: 'Features', icon: '⚡' },
-    { id: 'upload', label: 'Upload GRP Excel File', icon: '⬆️' },
-  ];
+const menuItems = [
+  { id: 'dashboard', label: 'Dashboard', to: '/dashboard' },
+  { id: 'favourites', label: 'Favourites', to: '/dashboard/favourites' },
+  { id: 'master-fms', label: 'Master FMS', to: '/dashboard/master-fms' },
+  { id: 'master-table', label: 'Master Table', to: '/dashboard/master-table' },
+  { id: 'users', label: 'Users', to: '/dashboard/users' },
+  { id: 'email', label: 'Email', to: '/dashboard/email' },
+  { id: 'checklist', label: 'Checklist', to: '/dashboard/checklist' },
+  { id: 'features', label: 'Features', to: '/dashboard/features' },
+  { id: 'upload', label: 'Upload GRP Excel File', to: '/dashboard/upload' },
+];
 
+const Sidebar = () => {
   return (
-    <div className="sidebar">
+    <aside className="sidebar">
       <div className="sidebar-header">
         <h3>FMS-GAD</h3>
       </div>
+
       <nav className="sidebar-nav">
         <ul className="sidebar-menu">
           {menuItems.map((item) => (
-            <li key={item.id} className={activeRoute === item.id ? 'active' : ''}>
-              <button
-                className="sidebar-link"
-                onClick={() => setActiveRoute(item.id)}
+            <li key={item.id}>
+              <NavLink
+                to={item.to}
+                end={item.id === 'dashboard'}
+                className={({ isActive }) =>
+                  isActive ? 'sidebar-link active' : 'sidebar-link'
+                }
               >
-                <span className="icon">{item.icon}</span>
                 <span className="label">{item.label}</span>
-              </button>
+              </NavLink>
             </li>
           ))}
         </ul>
       </nav>
-    </div>
+    </aside>
   );
 };
 

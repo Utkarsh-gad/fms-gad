@@ -1,30 +1,28 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./auth.css";
 
-const Register = ({ setActiveRoute, setIsAuthenticated }) => {
+const Register = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    userName: "",
+    designation: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const apiBase = import.meta.env.VITE_WORKSPACE_API || "";
-  
-  
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -33,93 +31,161 @@ const Register = ({ setActiveRoute, setIsAuthenticated }) => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${apiBase}/register`, {
+      const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxh6FaykBGej-7k1bR79Uf_oD7x2M1Usl1pZWY8qO95Vn09HAEyeBkZR4vSJMNqAvWTGg/exec";
+      
+      // Fetch existing users to check if email already exists
+      const loginResponse = await fetch(`${APPS_SCRIPT_URL}?action=login`);
+      const existingUsers = await loginResponse.json();
+      
+      const exists = existingUsers.some((u) => u.email === formData.email);
+      if (exists) {
+        setError("Email already registered");
+        setLoading(false);
+        return;
+      }
+
+      // Register new user by sending data to Apps Script
+      const registerResponse = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          action: "register",
+          email: formData.email,
           firstName: formData.firstName,
           lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-        }),
+          userName: formData.userName,
+          designation: formData.designation,
+          password: formData.password
+        })
       });
 
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}));
-        throw new Error(errBody.message || "Registration failed");
+      const result = await registerResponse.json();
+      if (!result.success) {
+        setError("Registration failed. Please try again.");
+        return;
       }
 
-      const data = await res.json();
+      // Store authenticated user
+      const newUser = {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        userName: formData.userName,
+        designation: formData.designation
+      };
 
-      // Store token in localStorage
-      if (data.token) {
-        localStorage.setItem("authToken", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user || {}));
-      }
-
-      // Update authentication state
+      localStorage.setItem("authUser", JSON.stringify(newUser));
+      localStorage.setItem("authToken", "sheet-auth-token");
       setIsAuthenticated(true);
-      setActiveRoute("dashboard");
-
-      // Navigate to dashboard
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message || "Registration failed");
+      setError(err.message || "Registration failed. Please try again.");
+      console.error("Registration error:", err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-center">
-      <form className="auth-card" onSubmit={handleSubmit}>
-        <h2>Register</h2>
-        {error && <div className="auth-error">{error}</div>}
-        <label>First name</label>
-        <input
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-        />
-        <label>Last name</label>
-        <input
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          required
-        />
-        <label>Email</label>
-        <input
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <label>Password</label>
-        <input
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <label>Confirm password</label>
-        <input
-          name="confirmPassword"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
-        <div className="auth-links">
-          <a href="/login">Already have an account? Login</a>
+    <div 
+      className="min-vh-100 d-flex align-items-center justify-content-center p-3" 
+      style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
+    >
+      <div className="card shadow-lg border-0" style={{ maxWidth: "550px", width: "100%", borderRadius: "12px" }}>
+        <div className="card-body p-4 p-md-5">
+          <div className="text-center mb-4">
+            <h2 className="fw-bold mb-2">Create Account</h2>
+            <p className="text-muted">Sign up to get started</p>
+          </div>
+
+          {error && (
+            <div className="alert alert-danger mb-4">{error}</div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <div className="row g-3 mb-3">
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">First Name</label>
+                <input
+                  name="firstName"
+                  type="text"
+                  className="form-control"
+                  placeholder="John"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">Last Name</label>
+                <input
+                  name="lastName"
+                  type="text"
+                  className="form-control"
+                  placeholder="Doe"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Email</label>
+              <input
+                name="email"
+                type="email"
+                className="form-control"
+                placeholder="your@email.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Password</label>
+              <input
+                name="password"
+                type="password"
+                className="form-control"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="form-label fw-semibold">Confirm Password</label>
+              <input
+                name="confirmPassword"
+                type="password"
+                className="form-control"
+                placeholder="••••••••"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary w-100 mb-3"
+              disabled={loading}
+              style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", border: "none" }}
+            >
+              {loading ? "Creating Account..." : "Register"}
+            </button>
+
+            <div className="text-center">
+              <p className="text-muted">
+                Already have an account? <a href="/login" style={{ color: "#667eea" }}>Login</a>
+              </p>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

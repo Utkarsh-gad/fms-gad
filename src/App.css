@@ -1,3 +1,4 @@
+/* ==================== GLOBAL RESET ==================== */
 * {
   margin: 0;
   padding: 0;
@@ -7,8 +8,17 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f5f5f5;
+  overflow: hidden; /* Prevent body scroll */
 }
 
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* ==================== APP LAYOUT ==================== */
 .app-layout {
   display: flex;
   height: 100vh;
@@ -16,95 +26,344 @@ body {
   overflow: hidden;
 }
 
+/* ==================== SIDEBAR ==================== */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: linear-gradient(180deg, #1e3a8a 0%, #4338ca 100%);
+  color: white;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Sidebar Menu */
+.sidebar-menu {
+  padding: 10px;
+}
+
+.sidebar-menu-item {
+  padding: 12px 20px;
+  margin: 5px 0;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.sidebar-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.sidebar-menu-item.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 600;
+}
+
+/* ==================== MAIN WRAPPER ==================== */
 .main-wrapper {
+  margin-left: 250px; /* Same as sidebar width */
+  width: calc(100% - 250px);
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  margin-left: 250px;
-  height: 100vh;
   overflow: hidden;
 }
 
+/* ==================== TOP NAVBAR ==================== */
+.top-navbar {
+  height: 70px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-left h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-icon {
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.navbar-icon:hover {
+  background-color: #f3f4f6;
+}
+
+.logout-btn {
+  padding: 10px 20px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+/* ==================== CONTENT WRAPPER ==================== */
 .content-wrapper {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
 }
 
+/* Custom Scrollbar for Content */
 .content-wrapper::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 .content-wrapper::-webkit-scrollbar-track {
   background: #f1f1f1;
+  border-radius: 5px;
 }
 
 .content-wrapper::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 .content-wrapper::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* ==================== DASHBOARD CONTENT ==================== */
+.dashboard-header {
+  margin-bottom: 30px;
+}
+
+.dashboard-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.dashboard-header p {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+/* Dashboard Cards Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  border-radius: 12px 12px 0 0;
+}
+
+.card-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #dc2626;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .main-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar-left h1 {
+    font-size: 18px;
+  }
+
+  .logout-btn span {
+    display: none; /* Hide "Logout" text on mobile */
+  }
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 15px;
+  }
+
+  .top-navbar {
+    padding: 0 15px;
+    height: 60px;
+  }
+
+  .dashboard-header h2 {
+    font-size: 24px;
+  }
+
+  .dashboard-header p {
+    font-size: 14px;
+  }
+
+  .navbar-right {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-wrapper {
+    padding: 10px;
+  }
+
+  .dashboard-card {
+    padding: 15px;
+  }
+
+  .card-body {
+    padding: 15px;
+  }
+
+  .dashboard-grid {
+    gap: 15px;
+  }
+}
+
+/* ==================== UTILITIES ==================== */
+.text-center {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.mb-4 {
+  margin-bottom: 1.5rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.p-4 {
+  padding: 1.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+  display: none;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 992px) {
+  .mobile-menu-toggle {
+    display: block;
   }
 }
 
-.card {
-  padding: 2em;
+/* Overlay for mobile sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
-.read-the-docs {
-  color: #888;
-}
-
-.app-container {
-  display: flex;
-}
-
-.content-area {
-  margin-left: 250px; /* Same as sidebar width */
-  padding: 20px;
-  flex-grow: 1;
-  height: 100vh; /* Full height */
-  overflow-y: auto; /* Enable scrolling */
-}
-
-.main-content {
-  padding: 20px;
-  background-color: #f5f5f5; /* Light background for content */
+@media (max-width: 992px) {
+  .sidebar-overlay.active {
+    display: block;
+  }
 }

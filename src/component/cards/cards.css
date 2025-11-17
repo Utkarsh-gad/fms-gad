@@ -1,0 +1,85 @@
+/* ==================== FAVORITE BUTTON STYLING ==================== */
+.fav-btn {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 120ms ease, opacity 120ms ease;
+  border-radius: 6px;
+}
+
+.fav-btn:hover {
+  transform: scale(1.15);
+  opacity: 0.95;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.fav-btn:active {
+  transform: scale(0.95);
+}
+
+.fav-btn:focus {
+  outline: 2px solid #f5c518;
+  outline-offset: 2px;
+}
+
+.fav-star-wrapper {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure card parent can position the favorite star */
+.dashboard-card {
+  position: relative;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 1200px) {
+  .fav-star-wrapper {
+    top: 6px;
+    right: 6px;
+  }
+
+  .fav-btn {
+    padding: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .fav-star-wrapper {
+    top: 4px;
+    right: 4px;
+  }
+
+  .fav-btn {
+    padding: 3px;
+  }
+
+  .fav-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .fav-star-wrapper {
+    top: 3px;
+    right: 3px;
+  }
+
+  .fav-btn {
+    padding: 2px;
+  }
+
+  .fav-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
