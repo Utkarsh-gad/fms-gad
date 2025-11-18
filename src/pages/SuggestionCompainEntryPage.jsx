@@ -3,7 +3,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-function TestLink() {
+function SuggestionCompainEntryPage() {
   const [data, setData] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [search, setSearch] = useState("");
@@ -251,4 +251,4 @@ function TestLink() {
   );
 }
 
-export default TestLink;
+export default SuggestionCompainEntryPage;

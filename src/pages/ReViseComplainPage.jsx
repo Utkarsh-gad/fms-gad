@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DemoPage3 = () => {
+const ReViseComplainPage = () => {
   return (
     <div className="container py-5">
       <div className="card shadow-sm">
@@ -62,4 +62,4 @@ const DemoPage3 = () => {
   );
 };
 
-export default DemoPage3;
+export default ReViseComplainPage;

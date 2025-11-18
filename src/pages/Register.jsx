@@ -31,56 +31,33 @@ const Register = ({ setIsAuthenticated }) => {
     setLoading(true);
 
     try {
-      const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxh6FaykBGej-7k1bR79Uf_oD7x2M1Usl1pZWY8qO95Vn09HAEyeBkZR4vSJMNqAvWTGg/exec";
-      
-      // Fetch existing users to check if email already exists
-      const loginResponse = await fetch(`${APPS_SCRIPT_URL}?action=login`);
-      const existingUsers = await loginResponse.json();
-      
-      const exists = existingUsers.some((u) => u.email === formData.email);
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+
+      const exists = users.some((u) => u.email === formData.email);
       if (exists) {
         setError("Email already registered");
         setLoading(false);
         return;
       }
 
-      // Register new user by sending data to Apps Script
-      const registerResponse = await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "register",
-          email: formData.email,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          userName: formData.userName,
-          designation: formData.designation,
-          password: formData.password
-        })
-      });
-
-      const result = await registerResponse.json();
-      if (!result.success) {
-        setError("Registration failed. Please try again.");
-        return;
-      }
-
-      // Store authenticated user
       const newUser = {
-        email: formData.email,
+        id: Date.now(),
         firstName: formData.firstName,
         lastName: formData.lastName,
         userName: formData.userName,
-        designation: formData.designation
+        designation: formData.designation,
+        email: formData.email,
+        password: formData.password
       };
 
+      users.push(newUser);
+      localStorage.setItem("users", JSON.stringify(users));
       localStorage.setItem("authUser", JSON.stringify(newUser));
-      localStorage.setItem("authToken", "sheet-auth-token");
+
       setIsAuthenticated(true);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message || "Registration failed. Please try again.");
-      console.error("Registration error:", err);
+      setError(err.message || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -89,7 +66,6 @@ const Register = ({ setIsAuthenticated }) => {
   return (
     <div 
       className="min-vh-100 d-flex align-items-center justify-content-center p-3" 
-      style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
     >
       <div className="card shadow-lg border-0" style={{ maxWidth: "550px", width: "100%", borderRadius: "12px" }}>
         <div className="card-body p-4 p-md-5">

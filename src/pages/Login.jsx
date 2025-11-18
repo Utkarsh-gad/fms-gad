@@ -22,29 +22,59 @@ const Login = ({ setIsAuthenticated }) => {
     setLoading(true);
 
     try {
-      // Fetch users from Google Sheet via Apps Script
-      const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxh6FaykBGej-7k1bR79Uf_oD7x2M1Usl1pZWY8qO95Vn09HAEyeBkZR4vSJMNqAvWTGg/exec";
-      
+      // Try to fetch users from Google Sheets (may fail due to CORS)
       const response = await fetch(`${APPS_SCRIPT_URL}?action=login`);
-      const users = await response.json();
+      if (response.ok) {
+        const users = await response.json();
+        if (Array.isArray(users) && users.length > 0) {
+          const user = users.find(
+            (u) => u.email === formData.email && u.password === formData.password
+          );
+          if (user) {
+            localStorage.setItem("authUser", JSON.stringify(user));
+            localStorage.setItem("authToken", "sheet-auth-token");
+            setIsAuthenticated(true);
+            navigate("/dashboard");
+            return;
+          }
+          setError("Invalid email or password");
+          setLoading(false);
+          return;
+        }
+      }
 
-      // Find user by email and password
-      const user = users.find(
+      // If we reach here, either response was not ok or users array missing or empty.
+      // Fallback to localStorage users for offline / CORS scenarios.
+      const localUsers = JSON.parse(localStorage.getItem("users")) || [];
+      const localUser = localUsers.find(
         (u) => u.email === formData.email && u.password === formData.password
       );
-
-      if (!user) {
-        setError("Invalid email or password");
-        setLoading(false);
+      if (localUser) {
+        // Informational: using local fallback
+        console.warn("Using localStorage fallback for authentication");
+        localStorage.setItem("authUser", JSON.stringify(localUser));
+        localStorage.setItem("authToken", "local-auth-token");
+        setIsAuthenticated(true);
+        navigate("/dashboard");
         return;
       }
 
-      // Store authenticated user
-      localStorage.setItem("authUser", JSON.stringify(user));
-      localStorage.setItem("authToken", "sheet-auth-token");
-      setIsAuthenticated(true);
-      navigate("/dashboard");
+      // No user found
+      setError("Invalid email or password");
     } catch (err) {
+      // Network/CORS error -> fallback to localStorage
+      console.warn("Login fetch failed, falling back to localStorage:", err);
+      const localUsers = JSON.parse(localStorage.getItem("users")) || [];
+      const localUser = localUsers.find(
+        (u) => u.email === formData.email && u.password === formData.password
+      );
+      if (localUser) {
+        localStorage.setItem("authUser", JSON.stringify(localUser));
+        localStorage.setItem("authToken", "local-auth-token");
+        setIsAuthenticated(true);
+        navigate("/dashboard");
+        return;
+      }
       setError(err.message || "Login failed. Please try again.");
       console.error("Login error:", err);
     } finally {
@@ -55,7 +85,7 @@ const Login = ({ setIsAuthenticated }) => {
   return (
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center p-3"
-      style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
+      
     >
       <div className="card shadow-lg border-0" style={{ maxWidth: "450px", width: "100%", borderRadius: "12px" }}>
         <div className="card-body p-4 p-md-5">

@@ -11,10 +11,10 @@ import EmailPage from '../pages/EmailPage';
 import ChecklistPage from '../pages/CheckListPage';
 import FeaturesPage from '../pages/FeaturesPage';
 import UploadPage from '../pages/UploadPage';
-import TestLink from '../pages/TestLink';
-import DemoPage1 from '../pages/DemoPage1';
-import DemoPage2 from '../pages/DemoPage2';
-import DemoPage3 from '../pages/DemoPage3';
+import SuggestionCompainEntryPage from '../pages/SuggestionCompainEntryPage';
+import ActionTakenOnComplainPage from '../pages/ActionTakenOnComplainPage';
+import ParentFeedbackPage from '../pages/ParentFeedbackPage';
+import ReViseComplainPage from '../pages/ReViseComplainPage';
 // import './DashboardLayout.css'; // optional layout styles
 
 const DashboardLayout = () => {
@@ -44,17 +44,16 @@ const DashboardLayout = () => {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="favourites" element={<FavouritesPage />} />
             <Route path="master-fms" element={<MasterFmsPage />} />
-            <Route path="master-fms/testlink" element={<TestLink />} />
-            <Route path="master-fms/demo-page-1" element={<DemoPage1 />} />
-            <Route path="master-fms/demo-page-2" element={<DemoPage2 />} />
-            <Route path="master-fms/demo-page-3" element={<DemoPage3 />} />
+            <Route path="master-fms/suggestion-entry" element={<SuggestionCompainEntryPage />} />
+            <Route path="master-fms/action-taken" element={<ActionTakenOnComplainPage />} />
+            <Route path="master-fms/parent-feedback" element={<ParentFeedbackPage />} />
+            <Route path="master-fms/revise-complain" element={<ReViseComplainPage />} />
             <Route path="master-table" element={<MasterTablePage />} />
             <Route path="users" element={<UsersPage />} />
             <Route path="email" element={<EmailPage />} />
             <Route path="checklist" element={<ChecklistPage />} />
             <Route path="features" element={<FeaturesPage />} />
             <Route path="upload" element={<UploadPage />} />
-            <Route path='testlink' element={<TestLink/>}/>
           </Routes>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DemoPage1 = () => {
+const ActionTakenOnComplainPage = () => {
   return (
     <div className="container py-5">
       <div className="card shadow-sm">
@@ -57,4 +57,4 @@ const DemoPage1 = () => {
   );
 };
 
-export default DemoPage1;
+export default ActionTakenOnComplainPage;

@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 const MasterFmsPage = () => {
   const cards = [
-    { id: 1, title: 'Complaints and Suggestions Entry', assigned: 'Assigned', role: 'Co-ordinator/DP/Teacher', route: 'testlink' },
-    { id: 2, title: 'Action Taken on Complaints/Suggestions', assigned: 'Assigned', role: 'Co-ordinator/DP/Teacher', route: 'demo-page-1' },
-    { id: 3, title: 'Parental Feedback', assigned: 'Assigned', role: 'CRM', route: 'demo-page-2' },
-    { id: 4, title: 'Re-Vision Of Complaint', assigned: 'Assigned', role: 'CRM', route: 'demo-page-3' },
+    { id: 1, title: 'Complaints and Suggestions Entry', assigned: 'Assigned', role: 'Co-ordinator/DP/Teacher', route: 'suggestion-entry' },
+    { id: 2, title: 'Action Taken on Complaints/Suggestions', assigned: 'Assigned', role: 'Co-ordinator/DP/Teacher', route: 'action-taken' },
+    { id: 3, title: 'Parental Feedback', assigned: 'Assigned', role: 'CRM', route: 'parent-feedback' },
+    { id: 4, title: 'Re-Vision Of Complaint', assigned: 'Assigned', role: 'CRM', route: 'revise-complain' },
   ];
 
   return (

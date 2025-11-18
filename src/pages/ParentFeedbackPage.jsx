@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DemoPage2 = () => {
+const ParentFeedbackPage = () => {
   return (
     <div className="container py-5">
       <div className="card shadow-sm">
@@ -62,4 +62,4 @@ const DemoPage2 = () => {
   );
 };
 
-export default DemoPage2;
+export default ParentFeedbackPage;
