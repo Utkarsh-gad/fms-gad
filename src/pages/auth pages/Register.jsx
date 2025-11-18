@@ -12,6 +12,7 @@ const Register = ({ setIsAuthenticated }) => {
     password: "",
     confirmPassword: ""
   });
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -64,19 +65,33 @@ const Register = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div 
-      className="min-vh-100 d-flex align-items-center justify-content-center p-3" 
+    <div
+      className="min-vh-100 d-flex align-items-center justify-content-center p-3"
+      style={{ background: "#f8f9fc" }}
     >
-      <div className="card shadow-lg border-0" style={{ maxWidth: "550px", width: "100%", borderRadius: "12px" }}>
-        <div className="card-body p-4 p-md-5">
+      <div
+        className="card shadow-lg border-0"
+        style={{
+          maxWidth: "550px",
+          width: "100%",
+          borderRadius: "12px",
+          maxHeight: "90vh",
+          overflow: "hidden"
+        }}
+      >
+        <div
+          className="card-body p-4 p-md-5"
+          style={{
+            overflowY: "auto",
+            maxHeight: "90vh"
+          }}
+        >
           <div className="text-center mb-4">
             <h2 className="fw-bold mb-2">Create Account</h2>
             <p className="text-muted">Sign up to get started</p>
           </div>
 
-          {error && (
-            <div className="alert alert-danger mb-4">{error}</div>
-          )}
+          {error && <div className="alert alert-danger mb-4">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="row g-3 mb-3">
@@ -92,6 +107,7 @@ const Register = ({ setIsAuthenticated }) => {
                   required
                 />
               </div>
+
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Last Name</label>
                 <input
@@ -106,13 +122,41 @@ const Register = ({ setIsAuthenticated }) => {
               </div>
             </div>
 
+            <div className="row g-3 mb-3">
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">User Name</label>
+                <input
+                  name="userName"
+                  type="text"
+                  className="form-control"
+                  placeholder="johndoe"
+                  value={formData.userName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">Designation</label>
+                <input
+                  name="designation"
+                  type="text"
+                  className="form-control"
+                  placeholder="Manager"
+                  value={formData.designation}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
             <div className="mb-3">
               <label className="form-label fw-semibold">Email</label>
               <input
                 name="email"
                 type="email"
                 className="form-control"
-                placeholder="your@email.com"
+                placeholder="example@gmail.com"
                 value={formData.email}
                 onChange={handleChange}
                 required
@@ -149,14 +193,21 @@ const Register = ({ setIsAuthenticated }) => {
               type="submit"
               className="btn btn-primary w-100 mb-3"
               disabled={loading}
-              style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", border: "none" }}
+              style={{
+                background:
+                  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                border: "none"
+              }}
             >
               {loading ? "Creating Account..." : "Register"}
             </button>
 
             <div className="text-center">
               <p className="text-muted">
-                Already have an account? <a href="/login" style={{ color: "#667eea" }}>Login</a>
+                Already have an account?{" "}
+                <a href="/login" style={{ color: "#667eea" }}>
+                  Login
+                </a>
               </p>
             </div>
           </form>

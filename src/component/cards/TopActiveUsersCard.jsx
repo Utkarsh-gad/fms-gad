@@ -1,6 +1,6 @@
 import { Search, Users, Star, StarOff } from "lucide-react";
 import { useEffect, useState } from 'react';
-import './cards.css';
+import '../styles/cards.css';
 
 const FAVORITES_KEY = 'favorites';
 

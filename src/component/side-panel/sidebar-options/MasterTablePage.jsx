@@ -71,7 +71,7 @@ const MasterTablePage = () => {
   useEffect(() => setPage(1), [query]);
 
   return (
-    <div className="p-3 p-md-4">
+    <div className=" p-md-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3 className="mb-0">Master Table</h3>
         <div className="d-flex align-items-center gap-2">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { LogOut, Menu } from 'lucide-react';
-import './TopNavBar.css';
+import '../styles/TopNavBar.css';
 
 const TopNavbar = ({ onLogout }) => {
   // Prefer currently authenticated user ('authUser' or 'user'), fallback to first in 'users' array

@@ -15,7 +15,7 @@ import SuggestionCompainEntryPage from '../pages/master-fms/SuggestionCompainEnt
 import ActionTakenOnComplainPage from '../pages/master-fms/ActionTakenOnComplainPage';
 import ParentFeedbackPage from '../pages/master-fms/ParentFeedbackPage';
 import ReViseComplainPage from '../pages/master-fms/ReViseComplainPage';
-// import './DashboardLayout.css'; // optional layout styles
+
 
 const DashboardLayout = () => {
   const [activeRoute, setActiveRoute] = useState('dashboard');
