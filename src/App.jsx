@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from './pages/auth pages/Login';
+import Register from './pages/auth pages/Register';
 import PageNotFound from './pages/PageNotFound';
 import DashboardLayout from './layouts/DashboardLayout';
 

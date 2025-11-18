@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import Sidebar from '../component/SideBar';
-import TopNavbar from '../component/TopNavBar';
+import Sidebar from '../component/side-panel/SideBar';
+import TopNavbar from '../component/side-panel/TopNavBar';
 import DashboardPage from '../pages/DashBoardPage';
-import FavouritesPage from '../pages/FavouritesPage';
-import MasterFmsPage from '../pages/MasterFmsPage';
-import MasterTablePage from '../pages/MasterTablePage';
-import UsersPage from '../pages/UsersPage';
-import EmailPage from '../pages/EmailPage';
-import ChecklistPage from '../pages/CheckListPage';
-import FeaturesPage from '../pages/FeaturesPage';
-import UploadPage from '../pages/UploadPage';
-import SuggestionCompainEntryPage from '../pages/SuggestionCompainEntryPage';
-import ActionTakenOnComplainPage from '../pages/ActionTakenOnComplainPage';
-import ParentFeedbackPage from '../pages/ParentFeedbackPage';
-import ReViseComplainPage from '../pages/ReViseComplainPage';
+import FavouritesPage from '../component/side-panel/sidebar-options/FavouritesPage';
+import MasterFmsPage from '../component/side-panel/sidebar-options/MasterFmsPage';
+import MasterTablePage from '../component/side-panel/sidebar-options/MasterTablePage';
+import UsersPage from '../component/side-panel/sidebar-options/UsersPage';
+import EmailPage from '../component/side-panel/sidebar-options/EmailPage';
+import ChecklistPage from '../component/side-panel/sidebar-options/CheckListPage';
+import FeaturesPage from '../component/side-panel/sidebar-options/FeaturesPage';
+import UploadPage from '../component/side-panel/sidebar-options/UploadPage';
+import SuggestionCompainEntryPage from '../pages/master-fms/SuggestionCompainEntryPage';
+import ActionTakenOnComplainPage from '../pages/master-fms/ActionTakenOnComplainPage';
+import ParentFeedbackPage from '../pages/master-fms/ParentFeedbackPage';
+import ReViseComplainPage from '../pages/master-fms/ReViseComplainPage';
 // import './DashboardLayout.css'; // optional layout styles
 
 const DashboardLayout = () => {
