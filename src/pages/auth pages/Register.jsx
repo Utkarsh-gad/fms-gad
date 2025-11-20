@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
+
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSv6dOGfQYALpXwKrzpY77xcRNcMyWDmizr-hJcyT_1CnvRKPB7-SMRaz5wyF-yA_sjw/exec";
 
 const Register = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -18,6 +23,36 @@ const Register = ({ setIsAuthenticated }) => {
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  /* 🔥 Utility: Save to Google Apps Script */
+  const saveToGoogleSheet = async (newUser) => {
+    try {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors", // Avoids CORS preflight
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "register",
+          ...newUser
+        })
+      });
+
+      // With no-cors, we can't read response.ok, so we optimistically assume success
+      console.log("User posted to Google Sheet");
+      return true;
+    } catch (err) {
+      console.warn("Failed to post to Google Sheet, will use localStorage fallback:", err);
+      return false;
+    }
+  };
+
+  /* 🔥 Utility: Save to localStorage fallback */
+  const saveToLocalStorage = (newUser) => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    console.log("User saved to localStorage (fallback)");
   };
 
   const handleSubmit = async (e) => {
@@ -51,14 +86,20 @@ const Register = ({ setIsAuthenticated }) => {
         password: formData.password
       };
 
-      users.push(newUser);
-      localStorage.setItem("users", JSON.stringify(users));
+      // Try to save to Google Sheet first
+      const sheetSaved = await saveToGoogleSheet(newUser);
+
+      // Always save to localStorage as fallback
+      saveToLocalStorage(newUser);
+
       localStorage.setItem("authUser", JSON.stringify(newUser));
+      localStorage.setItem("authToken", sheetSaved ? "sheet-auth-token" : "local-auth-token");
 
       setIsAuthenticated(true);
       navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Registration failed");
+      console.error("Registration error:", err);
     } finally {
       setLoading(false);
     }
@@ -165,28 +206,56 @@ const Register = ({ setIsAuthenticated }) => {
 
             <div className="mb-3">
               <label className="form-label fw-semibold">Password</label>
-              <input
-                name="password"
-                type="password"
-                className="form-control"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  className="form-control"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "15px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </span>
+              </div>
             </div>
 
             <div className="mb-4">
               <label className="form-label fw-semibold">Confirm Password</label>
-              <input
-                name="confirmPassword"
-                type="password"
-                className="form-control"
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <input
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  className="form-control"
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+                <span
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "15px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer"
+                  }}
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </span>
+              </div>
             </div>
 
             <button

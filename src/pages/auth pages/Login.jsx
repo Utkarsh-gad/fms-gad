@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
-const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxh6FaykBGej-7k1bR79Uf_oD7x2M1Usl1pZWY8qO95Vn09HAEyeBkZR4vSJMNqAvWTGg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSv6dOGfQYALpXwKrzpY77xcRNcMyWDmizr-hJcyT_1CnvRKPB7-SMRaz5wyF-yA_sjw/exec";
 
 const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
@@ -31,7 +30,9 @@ const Login = ({ setIsAuthenticated }) => {
 
     try {
       // Try Google Apps Script API first
-      const response = await fetch(`${APPS_SCRIPT_URL}?action=login`);
+      const response = await fetch(
+        `${APPS_SCRIPT_URL}?action=login&email=${encodeURIComponent(formData.email)}&password=${encodeURIComponent(formData.password)}`
+      );
 
       if (response.ok) {
         const users = await response.json();

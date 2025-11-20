@@ -1,8 +1,11 @@
 import React from 'react';
-import { LogOut, Menu } from 'lucide-react';
+import { LogOut, Menu, ChevronLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/TopNavBar.css';
 
 const TopNavbar = ({ onLogout }) => {
+  const navigate = useNavigate();
+
   // Prefer currently authenticated user ('authUser' or 'user'), fallback to first in 'users' array
   let user = {};
   try {
@@ -18,12 +21,19 @@ const TopNavbar = ({ onLogout }) => {
     if (overlay) overlay.classList.toggle('active');
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="top-navbar bg-white border-bottom shadow-sm" style={{ position: 'sticky', top: 0, zIndex: 999 }}>
       <div className="px-4 py-2 d-flex justify-content-between align-items-center" style={{ width: '100%' }}>
         <div className="d-flex align-items-center">
           <button aria-label="Open menu" className="mobile-menu-toggle icon-btn me-3" onClick={toggleSidebar}>
             <Menu />
+          </button>
+          <button aria-label="Go back" className="icon-btn me-2" onClick={handleBack} title="Go back to previous page" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '8px 12px', borderRadius: '6px', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}>
+            <ChevronLeft style={{ width: '20px', height: '20px', color: '#333' }} />
           </button>
           <h2 className="mb-0 fw-bold">Admin Dashboard</h2>
         </div>
