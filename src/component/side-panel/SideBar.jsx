@@ -14,11 +14,28 @@ const menuItems = [
   { id: 'upload', label: 'Upload GRP Excel File', to: '/dashboard/upload' },
 ];
 
+
 const Sidebar = () => {
+  // Close sidebar on mobile
+  const handleCloseSidebar = () => {
+    const sb = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sb) sb.classList.remove('mobile-open');
+    if (overlay) overlay.classList.remove('active');
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
         <h3>FMS-GAD</h3>
+        <button
+          className="sidebar-close-btn"
+          aria-label="Close sidebar"
+          style={{ background: 'none', border: 'none', fontSize: '2rem', color: '#fff', cursor: 'pointer', marginLeft: '8px' }}
+          onClick={handleCloseSidebar}
+        >
+          &times;
+        </button>
       </div>
 
       <nav className="sidebar-nav">
@@ -31,6 +48,7 @@ const Sidebar = () => {
                 className={({ isActive }) =>
                   isActive ? 'sidebar-link active' : 'sidebar-link'
                 }
+                onClick={handleCloseSidebar}
               >
                 <span className="label">{item.label}</span>
               </NavLink>

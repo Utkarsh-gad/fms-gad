@@ -27,15 +27,15 @@ const TopNavbar = ({ onLogout }) => {
 
   return (
     <div className="top-navbar bg-white border-bottom shadow-sm" style={{ position: 'sticky', top: 0, zIndex: 999 }}>
-      <div className="px-4 py-2 d-flex justify-content-between align-items-center" style={{ width: '100%' }}>
+      <div className="py-2 d-flex justify-content-between align-items-center" style={{ width: '100%' }}>
         <div className="d-flex align-items-center">
-          <button aria-label="Open menu" className="mobile-menu-toggle icon-btn me-3" onClick={toggleSidebar}>
+          <button aria-label="Open menu" className="mobile-menu-toggle icon-btn" onClick={toggleSidebar}>
             <Menu />
           </button>
-          <button aria-label="Go back" className="icon-btn me-2" onClick={handleBack} title="Go back to previous page" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '8px 12px', borderRadius: '6px', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}>
+          <button aria-label="Go back" className="icon-btn" onClick={handleBack} title="Go back to previous page" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '2px 12px', borderRadius: '6px', background: 'transparent', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}>
             <ChevronLeft style={{ width: '20px', height: '20px', color: '#333' }} />
           </button>
-          <h2 className="mb-0 fw-bold">Admin Dashboard</h2>
+          <h2 className="mb-0 fw-bold">FMS</h2>
         </div>
 
         <div className="d-flex align-items-center gap-3">
