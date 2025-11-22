@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSv6dOGfQYALpXwKrzpY77xcRNcMyWDmizr-hJcyT_1CnvRKPB7-SMRaz5wyF-yA_sjw/exec";
+const APPS_SCRIPT_URL =import.meta.env.VITE_APPS_SCRIPT_URL;
+
 
 const Register = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
@@ -15,44 +16,13 @@ const Register = ({ setIsAuthenticated }) => {
     designation: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  /* 🔥 Utility: Save to Google Apps Script */
-  const saveToGoogleSheet = async (newUser) => {
-    try {
-      const response = await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors", // Avoids CORS preflight
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "register",
-          ...newUser
-        })
-      });
-
-      // With no-cors, we can't read response.ok, so we optimistically assume success
-      console.log("User posted to Google Sheet");
-      return true;
-    } catch (err) {
-      console.warn("Failed to post to Google Sheet, will use localStorage fallback:", err);
-      return false;
-    }
-  };
-
-  /* 🔥 Utility: Save to localStorage fallback */
-  const saveToLocalStorage = (newUser) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    console.log("User saved to localStorage (fallback)");
   };
 
   const handleSubmit = async (e) => {
@@ -67,39 +37,49 @@ const Register = ({ setIsAuthenticated }) => {
     setLoading(true);
 
     try {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-
-      const exists = users.some((u) => u.email === formData.email);
-      if (exists) {
-        setError("Email already registered");
-        setLoading(false);
-        return;
-      }
-
-      const newUser = {
-        id: Date.now(),
+      // Prepare query parameters for GET request
+      const urlParams = new URLSearchParams({
+        action: "register",
         firstName: formData.firstName,
         lastName: formData.lastName,
         userName: formData.userName,
         designation: formData.designation,
         email: formData.email,
-        password: formData.password
-      };
+        password: formData.password,
+      });
 
-      // Try to save to Google Sheet first
-      const sheetSaved = await saveToGoogleSheet(newUser);
+      // Send GET request to Apps Script
+      const res = await fetch(`${APPS_SCRIPT_URL}?${urlParams.toString()}`, {
+        method: "GET",
+      });
 
-      // Always save to localStorage as fallback
-      saveToLocalStorage(newUser);
+      const data = await res.json();
 
-      localStorage.setItem("authUser", JSON.stringify(newUser));
-      localStorage.setItem("authToken", sheetSaved ? "sheet-auth-token" : "local-auth-token");
+      if (data.success) {
+        alert("Registration successful!");
 
-      setIsAuthenticated(true);
-      navigate("/dashboard");
+        // Save session
+        localStorage.setItem(
+          "authUser",
+          JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            designation: formData.designation,
+            userName: formData.userName,
+          })
+        );
+
+        localStorage.setItem("authToken", "sheet-auth-token");
+
+        setIsAuthenticated(true);
+        navigate("/dashboard");
+      } else {
+        setError(data.message || "Registration failed");
+      }
     } catch (err) {
-      setError(err.message || "Registration failed");
       console.error("Registration error:", err);
+      setError("Unable to connect to server. Try again.");
     } finally {
       setLoading(false);
     }
@@ -117,15 +97,12 @@ const Register = ({ setIsAuthenticated }) => {
           width: "100%",
           borderRadius: "12px",
           maxHeight: "90vh",
-          overflow: "hidden"
+          overflow: "hidden",
         }}
       >
         <div
           className="card-body p-4 p-md-5"
-          style={{
-            overflowY: "auto",
-            maxHeight: "90vh"
-          }}
+          style={{ overflowY: "auto", maxHeight: "90vh" }}
         >
           <div className="text-center mb-4">
             <h2 className="fw-bold mb-2">Create Account</h2>
@@ -135,6 +112,7 @@ const Register = ({ setIsAuthenticated }) => {
           {error && <div className="alert alert-danger mb-4">{error}</div>}
 
           <form onSubmit={handleSubmit}>
+            {/* First + Last Name */}
             <div className="row g-3 mb-3">
               <div className="col-md-6">
                 <label className="form-label fw-semibold">First Name</label>
@@ -148,7 +126,6 @@ const Register = ({ setIsAuthenticated }) => {
                   required
                 />
               </div>
-
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Last Name</label>
                 <input
@@ -163,6 +140,7 @@ const Register = ({ setIsAuthenticated }) => {
               </div>
             </div>
 
+            {/* User Name + Designation */}
             <div className="row g-3 mb-3">
               <div className="col-md-6">
                 <label className="form-label fw-semibold">User Name</label>
@@ -176,7 +154,6 @@ const Register = ({ setIsAuthenticated }) => {
                   required
                 />
               </div>
-
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Designation</label>
                 <input
@@ -191,6 +168,7 @@ const Register = ({ setIsAuthenticated }) => {
               </div>
             </div>
 
+            {/* Email */}
             <div className="mb-3">
               <label className="form-label fw-semibold">Email</label>
               <input
@@ -204,6 +182,7 @@ const Register = ({ setIsAuthenticated }) => {
               />
             </div>
 
+            {/* Password */}
             <div className="mb-3">
               <label className="form-label fw-semibold">Password</label>
               <div style={{ position: "relative" }}>
@@ -223,7 +202,7 @@ const Register = ({ setIsAuthenticated }) => {
                     right: "15px",
                     top: "50%",
                     transform: "translateY(-50%)",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -231,6 +210,7 @@ const Register = ({ setIsAuthenticated }) => {
               </div>
             </div>
 
+            {/* Confirm Password */}
             <div className="mb-4">
               <label className="form-label fw-semibold">Confirm Password</label>
               <div style={{ position: "relative" }}>
@@ -244,20 +224,27 @@ const Register = ({ setIsAuthenticated }) => {
                   required
                 />
                 <span
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  onClick={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
                   style={{
                     position: "absolute",
                     right: "15px",
                     top: "50%",
                     transform: "translateY(-50%)",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                 >
-                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
                 </span>
               </div>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               className="btn btn-primary w-100 mb-3"
@@ -265,7 +252,7 @@ const Register = ({ setIsAuthenticated }) => {
               style={{
                 background:
                   "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                border: "none"
+                border: "none",
               }}
             >
               {loading ? "Creating Account..." : "Register"}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSv6dOGfQYALpXwKrzpY77xcRNcMyWDmizr-hJcyT_1CnvRKPB7-SMRaz5wyF-yA_sjw/exec";
+const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL;
 
 const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
@@ -14,8 +14,8 @@ const Login = ({ setIsAuthenticated }) => {
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+  
 
-  /* 🔥 Utility: Local fallback login */
   const attemptLocalLogin = () => {
     const localUsers = JSON.parse(localStorage.getItem("users")) || [];
     return localUsers.find(
@@ -29,39 +29,29 @@ const Login = ({ setIsAuthenticated }) => {
     setLoading(true);
 
     try {
-      // Try Google Apps Script API first
-      const response = await fetch(
-        `${APPS_SCRIPT_URL}?action=login&email=${encodeURIComponent(formData.email)}&password=${encodeURIComponent(formData.password)}`
-      );
+      /* STEP 1 = Try Google Sheet first */
+      const urlParams = new URLSearchParams({
+        action: "login",
+        email: formData.email,
+        password: formData.password,
+      });
 
-      if (response.ok) {
-        const users = await response.json();
+      const res = await fetch(`${APPS_SCRIPT_URL}?${urlParams.toString()}`);
+      const data = await res.json();
 
-        // Google Sheet returned user list
-        if (Array.isArray(users) && users.length > 0) {
-          const user = users.find(
-            (u) =>
-              u.email === formData.email &&
-              u.password === formData.password
-          );
-
-          if (user) {
-            // Successful Login
-            localStorage.setItem("authUser", JSON.stringify(user));
-            localStorage.setItem("authToken", "sheet-auth-token");
-            setIsAuthenticated(true);
-            navigate("/dashboard");
-            return;
-          }
-        }
+      if (data.success) {
+        setIsAuthenticated(true);
+        navigate("/dashboard");
+      } else {
+        setError(data.message || "Invalid email or password");
       }
 
-      // If API fails OR user not found — fallback to localStorage
+      /* STEP 2 = Fallback to Local Storage */
       const localUser = attemptLocalLogin();
       if (localUser) {
-        console.warn("Using localStorage fallback (Sheet failed)");
         localStorage.setItem("authUser", JSON.stringify(localUser));
         localStorage.setItem("authToken", "local-auth-token");
+
         setIsAuthenticated(true);
         navigate("/dashboard");
         return;
@@ -69,13 +59,14 @@ const Login = ({ setIsAuthenticated }) => {
 
       setError("Invalid email or password");
     } catch (err) {
-      // For ANY error → fallback to localStorage
-      console.warn("Apps Script login failed → Using local fallback");
+      console.warn("Login failed → Using fallback");
 
+      /* STEP 3 = Network/API failure → use localStorage fallback */
       const localUser = attemptLocalLogin();
       if (localUser) {
         localStorage.setItem("authUser", JSON.stringify(localUser));
         localStorage.setItem("authToken", "local-auth-token");
+
         setIsAuthenticated(true);
         navigate("/dashboard");
         return;
@@ -102,6 +93,7 @@ const Login = ({ setIsAuthenticated }) => {
           {error && <div className="alert alert-danger mb-4">{error}</div>}
 
           <form onSubmit={handleSubmit}>
+            {/* Email */}
             <div className="mb-3">
               <label className="form-label fw-semibold">Email</label>
               <input
@@ -115,9 +107,10 @@ const Login = ({ setIsAuthenticated }) => {
               />
             </div>
 
-            {/* Password with Eye Icon */}
+            {/* Password */}
             <div className="mb-4 position-relative">
               <label className="form-label fw-semibold">Password</label>
+
               <input
                 name="password"
                 type={showPassword ? "text" : "password"}
@@ -141,13 +134,13 @@ const Login = ({ setIsAuthenticated }) => {
               </span>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               className="btn btn-primary w-100 mb-3"
               disabled={loading}
               style={{
-                background:
-                  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                 border: "none",
               }}
             >
@@ -156,7 +149,7 @@ const Login = ({ setIsAuthenticated }) => {
 
             <div className="text-center">
               <p className="text-muted">
-                Don't have an account?{" "}
+                Don’t have an account?{" "}
                 <a href="/register" style={{ color: "#667eea" }}>
                   Register
                 </a>
